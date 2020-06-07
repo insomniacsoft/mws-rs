@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
-use feeds::Envelope;
-use feeds::Message;
-use types::ToIso8601;
-use xmlhelper::encode;
+use crate::feeds::Envelope;
+use crate::feeds::Message;
+use crate::types::ToIso8601;
+use crate::xmlhelper::encode;
 
 #[derive(Debug, Serialize)]
 pub struct OrderFulfillmentMessage {
@@ -87,9 +87,9 @@ impl<W: encode::XmlEventWriter> encode::XmlWrite<W> for Envelope<OrderFulfillmen
 mod tests {
   use super::*;
   use chrono::FixedOffset;
-  use feeds::OperationType;
-  use xmlhelper::encode::XmlWrite;
-  use xmlhelper::encode::{EmitterConfig, EventWriter};
+  use crate::feeds::OperationType;
+  use crate::xmlhelper::encode::XmlWrite;
+  use crate::xmlhelper::encode::{EmitterConfig, EventWriter};
 
   #[test]
   fn test_order_fulfillment_feed() {

@@ -3,10 +3,10 @@
 //! [Documentation](http://docs.developer.amazonservices.com/en_CA/feeds/Feeds_Overview.html)
 
 use chrono::{DateTime, Utc};
-use client::{Client, ContentType, Method};
-use result::MwsResult;
+use crate::client::{Client, ContentType, Method};
+use crate::result::MwsResult;
 use std::io::{Read, Write};
-use xmlhelper::encode;
+use crate::xmlhelper::encode;
 
 pub mod message;
 
@@ -118,7 +118,7 @@ impl<M: Message> Envelope<M> {
   where
     Self: encode::XmlWrite<encode::EventWriter<Vec<u8>>>,
   {
-    use xmlhelper::encode::*;
+    use crate::xmlhelper::encode::*;
     let mut writer =
       EventWriter::new_with_config(vec![], EmitterConfig::new().perform_indent(true));
     self.write_xml(&mut writer)?;

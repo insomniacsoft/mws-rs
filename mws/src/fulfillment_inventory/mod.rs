@@ -3,12 +3,12 @@
 //! [Documentation](http://docs.developer.amazonservices.com/en_CA/fba_inventory/FBAInventory_Overview.html)
 
 use chrono::{DateTime, Utc};
-use client::{Client, Method};
+use crate::client::{Client, Method};
 mod types;
 pub use self::types::{
   Condition, InventorySupply, InventorySupplyDetail, SupplyType, Timepoint, TimepointType,
 };
-use result::MwsResult;
+use crate::result::MwsResult;
 
 static PATH: &'static str = "/FulfillmentInventory/2010-10-01";
 static VERSION: &'static str = "2010-10-01";

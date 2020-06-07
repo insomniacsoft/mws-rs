@@ -3,11 +3,11 @@
 //! [Documentation](https://docs.developer.amazonservices.com/en_US/fba_outbound/FBAOutbound_Overview.html)
 
 use chrono::{DateTime, Utc};
-use client::{Client, Method};
+use crate::client::{Client, Method};
 mod types;
 pub use self::types::*;
 use super::types::ToIso8601;
-use result::MwsResult;
+use crate::result::MwsResult;
 
 static PATH: &'static str = "/FulfillmentOutboundShipment/2010-10-01";
 static VERSION: &'static str = "2010-10-01";

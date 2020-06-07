@@ -3,8 +3,8 @@
 //! [Documentation](http://docs.developer.amazonservices.com/en_US/merch_fulfill/MerchFulfill_Overview.html)
 
 pub use self::types::*;
-use client::{Client, Method};
-use result::MwsResult;
+use crate::client::{Client, Method};
+use crate::result::MwsResult;
 
 mod types;
 

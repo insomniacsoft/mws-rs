@@ -3,10 +3,10 @@
 //! [Documentation](http://docs.developer.amazonservices.com/en_US/reports/Reports_Overview.html)
 
 use chrono::{DateTime, Utc};
-use client::{Client, Method};
+use crate::client::{Client, Method};
 mod types;
 pub use self::types::{ReportInfo, ReportProcessingStatus, ReportRequestInfo, ReportSchedule};
-use result::{MwsError, MwsResult};
+use crate::result::{MwsError, MwsResult};
 use std::io::{self, Write};
 
 static PATH: &'static str = "/";

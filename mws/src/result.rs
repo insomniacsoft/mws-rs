@@ -1,4 +1,4 @@
-pub use client::ErrorResponse as MwsErrorResponse;
+pub use crate::client::ErrorResponse as MwsErrorResponse;
 
 #[derive(Fail, Debug)]
 pub enum MwsError {

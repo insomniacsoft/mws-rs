@@ -5,10 +5,10 @@
 //!
 
 pub use reqwest::Method;
-use result::{MwsError, MwsResult};
+use crate::result::{MwsError, MwsResult};
 use std::cmp::{Ord, Ordering};
 use std::path::Path;
-use types::ToIso8601;
+use crate::types::ToIso8601;
 use url::percent_encoding::{percent_encode, EncodeSet};
 
 /// URL encode the parameter name and values according to the following rules:

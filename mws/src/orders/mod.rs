@@ -3,10 +3,10 @@
 //! [Documentation](http://docs.developer.amazonservices.com/en_US/orders-2013-09-01/Orders_Overview.html)
 
 use chrono::{DateTime, Utc};
-use client::{Client, Method};
+use crate::client::{Client, Method};
 mod types;
 pub use self::types::*;
-use result::MwsResult;
+use crate::result::MwsResult;
 
 static PATH: &'static str = "/Orders/2013-09-01";
 static VERSION: &'static str = "2013-09-01";

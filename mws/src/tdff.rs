@@ -1,7 +1,7 @@
 //! Tab-delimited flat file helpers
 
 use csv::{Reader, ReaderBuilder};
-use result::{MwsError, MwsResult};
+use crate::result::{MwsError, MwsResult};
 use std::io::Read;
 
 pub struct TdffParser<R: Read> {

@@ -103,17 +103,17 @@ macro_rules! str_enum {
       }
     }
 
-    impl ::SerializeMwsParams for $name {
-      fn serialize_mws_params(&self, ctx: &::types::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
+    impl crate::SerializeMwsParams for $name {
+      fn serialize_mws_params(&self, ctx: &crate::types::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
         self.as_ref().serialize_mws_params(ctx, pairs);
       }
     }
 
-    impl<S> ::xmlhelper::decode::FromXmlStream<S> for $name
-    where S: ::xmlhelper::decode::XmlEventStream
+    impl<S> crate::xmlhelper::decode::FromXmlStream<S> for $name
+    where S: crate::xmlhelper::decode::XmlEventStream
     {
-      fn from_xml(s: &mut S) -> ::result::MwsResult<Self> {
-        use xmlhelper::decode::characters;
+      fn from_xml(s: &mut S) -> crate::result::MwsResult<Self> {
+        use crate::xmlhelper::decode::characters;
         characters(s)
       }
     }
@@ -179,17 +179,17 @@ macro_rules! string_map_enum {
       }
     }
 
-    impl ::SerializeMwsParams for $name {
-      fn serialize_mws_params(&self, ctx: &::types::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
+    impl crate::SerializeMwsParams for $name {
+      fn serialize_mws_params(&self, ctx: &crate::types::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
         self.as_ref().serialize_mws_params(ctx, pairs);
       }
     }
 
-    impl<S> ::xmlhelper::decode::FromXmlStream<S> for $name
-    where S: ::xmlhelper::decode::XmlEventStream
+    impl<S> crate::xmlhelper::decode::FromXmlStream<S> for $name
+    where S: crate::xmlhelper::decode::XmlEventStream
     {
-      fn from_xml(s: &mut S) -> ::result::MwsResult<Self> {
-        use xmlhelper::decode::characters;
+      fn from_xml(s: &mut S) -> crate::result::MwsResult<Self> {
+        use crate::xmlhelper::decode::characters;
         characters(s)
       }
     }
@@ -199,7 +199,7 @@ macro_rules! string_map_enum {
 macro_rules! response_envelope_type {
   ($name:ident < $payload_ty:ty > , $response_tag:expr, $result_tag:expr) => {
     #[derive(Default)]
-    struct $name(::types::ResponseEnvelope<$payload_ty>);
+    struct $name(crate::types::ResponseEnvelope<$payload_ty>);
 
     impl $name {
       fn into_inner(self) -> $payload_ty {
@@ -207,20 +207,20 @@ macro_rules! response_envelope_type {
       }
     }
 
-    impl<S> ::xmlhelper::decode::FromXmlStream<S> for $name
+    impl<S> crate::xmlhelper::decode::FromXmlStream<S> for $name
     where
-      S: ::xmlhelper::decode::XmlEventStream,
+      S: crate::xmlhelper::decode::XmlEventStream,
     {
-      fn from_xml(s: &mut S) -> ::result::MwsResult<Self> {
-        use xmlhelper::decode::{characters, element, fold_elements, start_document};
+      fn from_xml(s: &mut S) -> crate::result::MwsResult<Self> {
+        use crate::xmlhelper::decode::{characters, element, fold_elements, start_document};
         start_document(s)?;
         element(s, $response_tag, |s| {
           fold_elements(
             s,
-            ::types::ResponseEnvelope::<$payload_ty>::default(),
+            crate::types::ResponseEnvelope::<$payload_ty>::default(),
             |s, response| {
               if s.local_name() == $result_tag {
-                response.payload = ::xmlhelper::decode::FromXmlStream::from_xml(s)?;
+                response.payload = crate::xmlhelper::decode::FromXmlStream::from_xml(s)?;
               } else if s.local_name() == "ResponseMetadata" {
                 response.request_id = element(s, "RequestId", |s| characters(s))?;
               }
@@ -237,7 +237,7 @@ macro_rules! response_envelope_type {
 macro_rules! response_envelope_batch_type {
   ($name:ident < $payload_ty:ty > , $response_tag:expr, $result_tag:expr) => {
     #[derive(Default)]
-    struct $name(::types::ResponseEnvelopeBatch<$payload_ty>);
+    struct $name(crate::types::ResponseEnvelopeBatch<$payload_ty>);
 
     impl $name {
       fn into_inner(self) -> Vec<$payload_ty> {
@@ -245,22 +245,22 @@ macro_rules! response_envelope_batch_type {
       }
     }
 
-    impl<S> ::xmlhelper::decode::FromXmlStream<S> for $name
+    impl<S> crate::xmlhelper::decode::FromXmlStream<S> for $name
     where
-      S: ::xmlhelper::decode::XmlEventStream,
+      S: crate::xmlhelper::decode::XmlEventStream,
     {
-      fn from_xml(s: &mut S) -> ::result::MwsResult<Self> {
-        use xmlhelper::decode::{characters, element, fold_elements, start_document};
+      fn from_xml(s: &mut S) -> crate::result::MwsResult<Self> {
+        use crate::xmlhelper::decode::{characters, element, fold_elements, start_document};
         start_document(s)?;
         element(s, $response_tag, |s| {
           fold_elements(
             s,
-            ::types::ResponseEnvelopeBatch::<$payload_ty>::default(),
+            crate::types::ResponseEnvelopeBatch::<$payload_ty>::default(),
             |s, response| {
               if s.local_name() == $result_tag {
                 response
                   .payload
-                  .push(::xmlhelper::decode::FromXmlStream::from_xml(s)?);
+                  .push(crate::xmlhelper::decode::FromXmlStream::from_xml(s)?);
               } else if s.local_name() == "ResponseMetadata" {
                 response.request_id = element(s, "RequestId", |s| characters(s))?;
               }

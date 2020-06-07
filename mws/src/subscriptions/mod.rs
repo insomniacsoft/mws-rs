@@ -2,8 +2,8 @@
 //!
 //! [Reference](http://docs.developer.amazonservices.com/en_US/subscriptions/Subscriptions_Overview.html)
 
-use client::{Client, Method};
-use result::MwsResult;
+use crate::client::{Client, Method};
+use crate::result::MwsResult;
 
 pub mod types;
 pub use self::types::*;

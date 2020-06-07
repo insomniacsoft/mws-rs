@@ -2,11 +2,11 @@ use reqwest;
 pub use reqwest::header::ContentType;
 use reqwest::Response;
 pub use reqwest::{Method, StatusCode};
-use result::{MwsError, MwsResult};
-use sign::SignatureV2;
+use crate::result::{MwsError, MwsResult};
+use crate::sign::SignatureV2;
 use std::io::Read;
-use xmlhelper::decode::{FromXmlStream, Stream};
-use SerializeMwsParams;
+use crate::xmlhelper::decode::{FromXmlStream, Stream};
+use crate::SerializeMwsParams;
 
 #[derive(Debug)]
 pub struct ErrorResponse {
@@ -31,7 +31,7 @@ pub struct ErrorResponseError {
 
 impl ErrorResponseInfo {
   fn from_xml_stream<R: ::std::io::Read>(s: &mut Stream<R>) -> MwsResult<ErrorResponseInfo> {
-    use xmlhelper::decode::{characters, element, fold_elements, start_document};
+    use crate::xmlhelper::decode::{characters, element, fold_elements, start_document};
     start_document(s)?;
     element(s, "ErrorResponse", |s| {
       fold_elements(s, ErrorResponseInfo::default(), |s, resp| {

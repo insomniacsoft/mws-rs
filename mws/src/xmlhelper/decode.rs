@@ -1,7 +1,7 @@
 //! Utilities to parse a XML event stream
 //!
 
-use result::{MwsError, MwsResult};
+use crate::result::{MwsError, MwsResult};
 use std::fmt::Display;
 use std::io::Read;
 use std::iter::Peekable;

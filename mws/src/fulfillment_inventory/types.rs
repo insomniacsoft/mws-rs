@@ -102,8 +102,8 @@ pub struct InventorySupplyDetail {
 mod tests {
   use super::*;
   use std::io::Cursor;
-  use xmlhelper::decode;
-  use xmlhelper::decode::FromXmlStream;
+  use crate::xmlhelper::decode;
+  use crate::xmlhelper::decode::FromXmlStream;
 
   #[test]
   fn test_decode_inventory_supply() {

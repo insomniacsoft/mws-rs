@@ -1,6 +1,6 @@
-use feeds::Envelope;
-use feeds::Message;
-use xmlhelper::encode;
+use crate::feeds::Envelope;
+use crate::feeds::Message;
+use crate::xmlhelper::encode;
 
 #[allow(non_snake_case)]
 #[derive(Debug, PartialEq, Serialize)]
@@ -57,9 +57,9 @@ impl<W: encode::XmlEventWriter> encode::XmlWrite<W> for Envelope<InventoryMessag
 #[cfg(test)]
 mod tests {
   use super::*;
-  use feeds::OperationType;
-  use xmlhelper::encode::XmlWrite;
-  use xmlhelper::encode::{EmitterConfig, EventWriter};
+  use crate::feeds::OperationType;
+  use crate::xmlhelper::encode::XmlWrite;
+  use crate::xmlhelper::encode::{EmitterConfig, EventWriter};
 
   #[test]
   fn test_inventory_feed() {

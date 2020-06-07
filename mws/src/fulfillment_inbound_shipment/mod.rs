@@ -3,8 +3,8 @@
 //! [Documentation](http://docs.developer.amazonservices.com/en_CA/fba_inbound/FBAInbound_Overview.html)
 
 use chrono::{DateTime, Utc};
-use client::{Client, Method};
-use result::MwsResult;
+use crate::client::{Client, Method};
+use crate::result::MwsResult;
 
 mod types;
 pub use self::types::*;
@@ -150,7 +150,7 @@ pub fn ListInboundShipmentItemsByNextToken(
 #[cfg(test)]
 mod tests {
   use super::*;
-  use types::SerializeMwsParams;
+  use crate::types::SerializeMwsParams;
 
   #[test]
   fn test_encode_list_inbound_shipments_params() {
