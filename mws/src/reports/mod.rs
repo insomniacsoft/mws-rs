@@ -5,7 +5,7 @@
 use chrono::{DateTime, Utc};
 use client::{Client, Method};
 mod types;
-pub use self::types::{ReportInfo, ReportProcessingStatus, ReportRequestInfo};
+pub use self::types::{ReportInfo, ReportProcessingStatus, ReportRequestInfo, ReportSchedule};
 use result::{MwsError, MwsResult};
 use std::io::{self, Write};
 
@@ -199,6 +199,145 @@ pub fn RequestReport(
     .request_xml(Method::Post, PATH, VERSION, "RequestReport", params)
     .map(|e: RequestReportEnvelope| e.into_inner())
     .map_err(|err| err.into())
+}
+
+/// Parameters for `ManageReportSchedule`
+#[allow(non_snake_case)]
+#[derive(Debug, Default, Serialize, SerializeMwsParams)]
+pub struct ManageReportScheduleParameters {
+  #[mws_param(list_item_type_name = "Type")]
+  pub ReportType: String,
+  pub Schedule: Option<String>,
+  pub ScheduleDate: Option<DateTime<Utc>>
+}
+
+#[derive(Debug, Default, Serialize, FromXmlStream)]
+#[allow(non_snake_case)]
+pub struct ManageReportScheduleResponse {
+  #[from_xml_stream(no_list_wrapper)]
+  pub Count: i32,
+  pub ReportSchedule: Vec<ReportSchedule>
+}
+
+response_envelope_type!(
+  ManageReportScheduleEnvelope<ManageReportScheduleResponse>,
+  "ManageReportScheduleResponse",
+  "ManageReportScheduleResult"
+);
+
+/// Creates, updates, or deletes a report request schedule for a specified report type.
+#[allow(non_snake_case)]
+pub fn ManageReportSchedule(
+  client: &Client,
+  params: ManageReportScheduleParameters,
+) -> MwsResult<ManageReportScheduleResponse> {
+  client
+      .request_xml(Method::Post, PATH, VERSION, "ManageReportSchedule", params)
+      .map(|e: ManageReportScheduleEnvelope| e.into_inner())
+      .map_err(|err| err.into())
+}
+
+/// Parameters for `GetReportScheduleList`
+#[allow(non_snake_case)]
+#[derive(Debug, Default, Serialize, SerializeMwsParams)]
+pub struct GetReportScheduleListParameters {
+  #[mws_param(list_item_type_name = "Type")]
+  pub ReportTypeList: Option<Vec<String>>,
+}
+
+#[derive(Debug, Default, Serialize, FromXmlStream)]
+#[allow(non_snake_case)]
+pub struct GetReportScheduleListResponse {
+  #[from_xml_stream(no_list_wrapper)]
+  pub ReportSchedule: Vec<ReportSchedule>,
+  pub NextToken: Option<String>,
+  pub HasNext: bool,
+}
+
+response_envelope_type!(
+  GetReportScheduleListEnvelope<GetReportScheduleListResponse>,
+  "GetReportScheduleListResponse",
+  "GetReportScheduleListResult"
+);
+
+/// Returns a list of reports that were created in the previous 90 days.
+#[allow(non_snake_case)]
+pub fn GetReportScheduleList(
+  client: &Client,
+  params: GetReportScheduleListParameters,
+) -> MwsResult<GetReportScheduleListResponse> {
+  client
+      .request_xml(Method::Post, PATH, VERSION, "GetReportScheduleList", params)
+      .map(|e: GetReportScheduleListEnvelope| e.into_inner())
+      .map_err(|err| err.into())
+}
+
+/// Parameters for `GetReportScheduleCount`
+#[allow(non_snake_case)]
+#[derive(Debug, Default, Serialize, SerializeMwsParams)]
+pub struct GetReportScheduleCountParameters {
+  #[mws_param(list_item_type_name = "Type")]
+  pub ReportTypeList: Option<Vec<String>>,
+}
+
+#[derive(Debug, Default, Serialize, FromXmlStream)]
+#[allow(non_snake_case)]
+pub struct GetReportScheduleCountResponse {
+  #[from_xml_stream(no_list_wrapper)]
+  pub Count: i32
+}
+
+response_envelope_type!(
+  GetReportScheduleCountEnvelope<GetReportScheduleCountResponse>,
+  "GetReportScheduleCountResponse",
+  "GetReportScheduleCountResult"
+);
+
+/// Returns a count of order report requests that are scheduled to be submitted to Amazon MWS.
+#[allow(non_snake_case)]
+pub fn GetReportScheduleCount(
+  client: &Client,
+  params: GetReportScheduleCountParameters,
+) -> MwsResult<GetReportScheduleCountResponse> {
+  client
+      .request_xml(Method::Post, PATH, VERSION, "GetReportScheduleCount", params)
+      .map(|e: GetReportScheduleCountEnvelope| e.into_inner())
+      .map_err(|err| err.into())
+}
+
+/// Parameters for `UpdateReportAcknowledgements`
+#[allow(non_snake_case)]
+#[derive(Debug, Default, Serialize, SerializeMwsParams)]
+pub struct UpdateReportAcknowledgementsParameters {
+  #[mws_param(list_item_type_name = "Id")]
+  pub ReportIdList: Vec<String>,
+  pub Acknowledged: Option<bool>
+}
+
+#[derive(Debug, Default, Serialize, FromXmlStream)]
+#[allow(non_snake_case)]
+pub struct UpdateReportAcknowledgementsResponse {
+  #[from_xml_stream(no_list_wrapper)]
+  pub Count: i32,
+  pub ReportInfo: Vec<ReportInfo>
+}
+
+response_envelope_type!(
+  UpdateReportAcknowledgementsEnvelope<UpdateReportAcknowledgementsResponse>,
+  "UpdateReportAcknowledgementsResponse",
+  "UpdateReportAcknowledgementsResult"
+);
+
+/// Updates the acknowledged status of one or more reports.
+#[allow(non_snake_case)]
+pub fn UpdateReportAcknowledgements(
+  client: &Client,
+  params: UpdateReportAcknowledgementsParameters,
+) -> MwsResult<UpdateReportAcknowledgementsResponse> {
+  client
+      .request_xml(Method::Post, PATH, VERSION, "UpdateReportAcknowledgements", params)
+      .map(|e: UpdateReportAcknowledgementsEnvelope| e.into_inner())
+      .map_err(|err| err.into())
 }
 
 #[cfg(test)]

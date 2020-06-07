@@ -9,5 +9,6 @@ Cargo.lock
 
 samples
 .env*
-.vscode
+.idea
 .DS_Store
+

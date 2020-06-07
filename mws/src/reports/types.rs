@@ -35,3 +35,11 @@ pub struct ReportRequestInfo {
   pub StartedProcessingDate: Option<DateTime<Utc>>,
   pub CompletedDate: Option<DateTime<Utc>>,
 }
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct ReportSchedule {
+  pub ReportType: String,
+  pub Schedule: String,
+  pub ScheduleDate: Option<DateTime<Utc>>
+}
