@@ -68,8 +68,8 @@ pub fn derive_params(input: TokenStream) -> TokenStream {
         .collect();
 
       quote! {
-        impl ::SerializeMwsParams for #name {
-          fn serialize_mws_params(&self, ctx: &::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
+        impl crate::types::SerializeMwsParams for #name {
+          fn serialize_mws_params(&self, ctx: &crate::types::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
             #(#item_push)*
           }
         }
@@ -93,8 +93,8 @@ pub fn derive_params(input: TokenStream) -> TokenStream {
         })
         .collect();
       quote! {
-        impl ::SerializeMwsParams for #name {
-          fn serialize_mws_params(&self, ctx: &::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
+        impl crate::types::SerializeMwsParams for #name {
+          fn serialize_mws_params(&self, ctx: &crate::types::SerializeMwsParamsContext, pairs: &mut Vec<(String, String)>) {
             let value = match *self {
               #(#pat_item)*
             };
@@ -125,7 +125,7 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
       &["no_list_wrapper", "from_attr", "from_content"],
     )
   } else {
-    panic!("only struct is supported.");
+    panic!("only struct is supported. x");
   };
 
   let (attr_fields, rest): (Vec<StructFieldMeta>, Vec<StructFieldMeta>) =
@@ -188,27 +188,27 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
                       (true, true) => {
                         quote! {
                           record.#ident.get_or_insert_with(|| vec![])
-                            .push(::xmlhelper::decode::FromXmlStream::from_xml(s)?)
+                            .push(crate::xmlhelper::decode::FromXmlStream::from_xml(s)?)
                         }
                       }
                       (false, true) => {
                         quote! {
                           record.#ident
-                            .push(::xmlhelper::decode::FromXmlStream::from_xml(s)?)
+                            .push(crate::xmlhelper::decode::FromXmlStream::from_xml(s)?)
                         }
                       }
                       (true, false) => {
                         quote! {
-                          record.#ident = ::xmlhelper::decode::fold_elements(s, vec![], |s, v| {
-                            v.push(::xmlhelper::decode::FromXmlStream::from_xml(s)?);
+                          record.#ident = crate::xmlhelper::decode::fold_elements(s, vec![], |s, v| {
+                            v.push(crate::xmlhelper::decode::FromXmlStream::from_xml(s)?);
                             Ok(())
                           }).map(Some)?
                         }
                       }
                       (false, false) => {
                         quote! {
-                          record.#ident = ::xmlhelper::decode::fold_elements(s, vec![], |s, v| {
-                            v.push(::xmlhelper::decode::FromXmlStream::from_xml(s)?);
+                          record.#ident = crate::xmlhelper::decode::fold_elements(s, vec![], |s, v| {
+                            v.push(crate::xmlhelper::decode::FromXmlStream::from_xml(s)?);
                             Ok(())
                           })?
                         }
@@ -226,14 +226,14 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
                   if last_node.ident == "Option" {
                     if arg_ident == "DateTime" {
                       return quote! {
-                        #ident_str => record.#ident = ::xmlhelper::decode::characters(s).map(Some)?,
+                        #ident_str => record.#ident = crate::xmlhelper::decode::characters(s).map(Some)?,
                       };
                     } else if arg_ident == "Vec" {
                       return quote_vec(ident, true, &f.config_list);
                     }
                   }
 
-                  // error[E0477]: the type `mws::xmlhelper::decode::ElementScopedStream<'_, _S>` does not fulfill the required lifetime
+                  // error[E0477]: the type `crate::xmlhelper::decode::ElementScopedStream<'_, _S>` does not fulfill the required lifetime
                   if last_node.ident == "Vec" {
                     return quote_vec(ident, false, &f.config_list);
                   }
@@ -250,10 +250,10 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
         );
       }
 
-      // workaround: error[E0477]: the type `mws::xmlhelper::decode::ElementScopedStream<'_, _S>` does not fulfill the required lifetime
+      // workaround: error[E0477]: the type `crate::xmlhelper::decode::ElementScopedStream<'_, _S>` does not fulfill the required lifetime
 
       quote! {
-        #ident_str => record.#ident = ::xmlhelper::decode::FromXmlStream::from_xml(s)?,
+        #ident_str => record.#ident = crate::xmlhelper::decode::FromXmlStream::from_xml(s)?,
       }
     })
     .collect();
@@ -279,13 +279,13 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
         if last_node.ident == "Option" {
           quote! {
             if let Some(value) = elem.attributes.value(#attr_name) {
-              record.#ident = Some(::xmlhelper::decode::parse_str(&value)?);
+              record.#ident = Some(crate::xmlhelper::decode::parse_str(&value)?);
             }
           }
         } else {
           quote! {
             if let Some(value) = elem.attributes.value(#attr_name) {
-              record.#ident = ::xmlhelper::decode::parse_str(&value)?;
+              record.#ident = crate::xmlhelper::decode::parse_str(&value)?;
             }
           }
         }
@@ -312,7 +312,7 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
   let content_field = if let Some(f) = content_fields.get(0) {
     let ident = &f.ident;
     quote! {
-      record.#ident = ::xmlhelper::decode::FromXmlStream::from_xml(s)?;
+      record.#ident = crate::xmlhelper::decode::FromXmlStream::from_xml(s)?;
     }
   } else {
     quote! {}
@@ -320,7 +320,7 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
 
   let assign_tag_fields = if tag_fields.len() > 0 {
     quote! {
-      use ::xmlhelper::decode::fold_elements;
+      use crate::xmlhelper::decode::fold_elements;
 
       record = fold_elements(s, record, |s, record| {
         match s.local_name() {
@@ -335,10 +335,10 @@ pub fn derive_from_xml_stream(input: TokenStream) -> TokenStream {
   };
 
   let expanded = quote! {
-    impl<_S> ::xmlhelper::decode::FromXmlStream<_S> for #name
-    where _S: ::xmlhelper::decode::XmlEventStream
+    impl<_S> crate::xmlhelper::decode::FromXmlStream<_S> for #name
+    where _S: crate::xmlhelper::decode::XmlEventStream
     {
-      fn from_xml(s: &mut _S) -> ::result::MwsResult<Self> {
+      fn from_xml(s: &mut _S) -> crate::result::MwsResult<Self> {
         let mut record = Self::default();
 
         #assign_attr_fields
@@ -362,7 +362,7 @@ pub fn derive_from_diff_row(input: TokenStream) -> TokenStream {
   let meta = if let Data::Struct(data) = input.data {
     get_struct_meta(data, "from_tdff_row", &["key"])
   } else {
-    panic!("only struct is supported.");
+    panic!("only struct is supported. y");
   };
 
   let fields: Vec<_> = meta
@@ -375,11 +375,11 @@ pub fn derive_from_diff_row(input: TokenStream) -> TokenStream {
           if v.contains(',') {
             let keys: Vec<_> = v.split(',').map(|s| s.trim()).collect();
             quote! {
-              #(#keys)|* => record.#ident = FromTdffField::parse_tdff_field(k, &v)?,
+              #(#keys)|* => record.#ident = crate::tdff::FromTdffField::parse_tdff_field(k, &v)?,
             }
           } else {
             quote! {
-              #v => record.#ident = FromTdffField::parse_tdff_field(k, &v)?,
+              #v => record.#ident = crate::tdff::FromTdffField::parse_tdff_field(k, &v)?,
             }
           }
         }
@@ -388,11 +388,11 @@ pub fn derive_from_diff_row(input: TokenStream) -> TokenStream {
           let ident_underscore_str = ident_str.replace("-", "_");
           if ident_str == ident_underscore_str {
             quote! {
-              #ident_str => record.#ident = FromTdffField::parse_tdff_field(k, v)?,
+              #ident_str => record.#ident = mws::tdff::FromTdffField::parse_tdff_field(k, v)?,
             }
           } else {
             quote! {
-              #ident_str => record.#ident = FromTdffField::parse_tdff_field(k, v)?,
+              #ident_str => record.#ident = mws::tdff::FromTdffField::parse_tdff_field(k, v)?,
             }
           }
         }
@@ -401,10 +401,10 @@ pub fn derive_from_diff_row(input: TokenStream) -> TokenStream {
     .collect();
 
   let expanded = quote! {
-    impl ::mws::tdff::FromTdffRow for #name
+    impl mws::tdff::FromTdffRow for #name
     {
-      fn from_tdff_row(pairs: &::mws::tdff::TdffRow) -> ::mws::result::MwsResult<Self> {
-        use ::mws::tdff::FromTdffField;
+      fn from_tdff_row(pairs: &::mws::tdff::TdffRow) -> crate::result::MwsResult<Self> {
+        use mws::tdff::FromTdffField;
         let mut record = #name::default();
         for (k, v) in pairs {
           let k = k as &str;
