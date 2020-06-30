@@ -41,6 +41,10 @@ enum Command {
     #[structopt(long = "type")]
     types: Vec<String>,
   },
+  ReportScheduleList {
+    #[structopt(long = "type")]
+    types: Vec<String>,
+  },
   ReportGet {
     #[structopt(long = "id")]
     id: String,
@@ -60,6 +64,14 @@ enum Command {
     seller_sku: String,
     #[structopt(long = "condition")]
     condition: String,
+  },
+  ListRegisteredDestinations {
+    #[structopt(long = "marketplace")]
+    marketplace_id: String,
+  },
+  ListSubscriptions {
+    #[structopt(long = "marketplace")]
+    marketplace_id: String,
   },
   ProductGetMyPriceForASIN {
     #[structopt(long = "marketplace")]
@@ -83,7 +95,6 @@ enum Command {
 
 fn main() {
   let opt = Opt::from_args();
-
   let env_path = opt.env.unwrap_or_else(|| PathBuf::from(".env"));
 
   println!("env path: {:?}", env_path);
@@ -141,6 +152,39 @@ fn main() {
         },
       )
       .unwrap();
+
+      println!("{:#?}", res)
+    }
+    Command::ReportScheduleList { types } => {
+      use mws::reports::*;
+      let res = GetReportScheduleList(
+        &client,
+        GetReportScheduleListParameters {
+          ReportTypeList: Some(types),
+          ..Default::default()
+        },
+      )
+          .unwrap();
+
+      println!("{:#?}", res)
+    }
+    Command::ListSubscriptions { marketplace_id } => {
+      use mws::subscriptions::*;
+      let res = ListSubscriptions(
+        &client,
+        marketplace_id,
+      )
+          .unwrap();
+
+      println!("{:#?}", res)
+    }
+    Command::ListRegisteredDestinations { marketplace_id } => {
+      use mws::subscriptions::*;
+      let res = ListRegisteredDestinations(
+        &client,
+        marketplace_id,
+      )
+          .unwrap();
 
       println!("{:#?}", res)
     }

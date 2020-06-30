@@ -375,11 +375,11 @@ pub fn derive_from_diff_row(input: TokenStream) -> TokenStream {
           if v.contains(',') {
             let keys: Vec<_> = v.split(',').map(|s| s.trim()).collect();
             quote! {
-              #(#keys)|* => record.#ident = crate::tdff::FromTdffField::parse_tdff_field(k, &v)?,
+              #(#keys)|* => record.#ident = mws::tdff::FromTdffField::parse_tdff_field(k, &v)?,
             }
           } else {
             quote! {
-              #v => record.#ident = crate::tdff::FromTdffField::parse_tdff_field(k, &v)?,
+              #v => record.#ident = mws::tdff::FromTdffField::parse_tdff_field(k, &v)?,
             }
           }
         }
@@ -403,7 +403,7 @@ pub fn derive_from_diff_row(input: TokenStream) -> TokenStream {
   let expanded = quote! {
     impl mws::tdff::FromTdffRow for #name
     {
-      fn from_tdff_row(pairs: &::mws::tdff::TdffRow) -> crate::result::MwsResult<Self> {
+      fn from_tdff_row(pairs: &::mws::tdff::TdffRow) -> mws::result::MwsResult<Self> {
         use mws::tdff::FromTdffField;
         let mut record = #name::default();
         for (k, v) in pairs {
