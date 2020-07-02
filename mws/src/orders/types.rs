@@ -1,7 +1,8 @@
 use chrono::{DateTime, Utc};
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde(default)]
 pub struct ShippingAddress {
   pub StateOrRegion: String,
   pub City: String,
@@ -14,14 +15,16 @@ pub struct ShippingAddress {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde(default)]
 pub struct CurrencyAmount {
   pub CurrencyCode: String,
   pub Amount: String,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde(default)]
 pub struct Order {
   /// An Amazon-defined order identifier, in 3-7-7 format.
   pub AmazonOrderId: String,
@@ -196,7 +199,8 @@ str_enum! {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde(default)]
 pub struct OrderItem {
   pub OrderItemId: String,
   pub QuantityOrdered: i32,
