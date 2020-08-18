@@ -13,7 +13,7 @@ static VERSION: &'static str = "2013-09-01";
 
 /// Parameters for `ListOrders`
 #[allow(non_snake_case)]
-#[derive(Debug, Default, Serialize, SerializeMwsParams)]
+#[derive(Debug, Clone, Default, Serialize, SerializeMwsParams)]
 pub struct ListOrdersParameters {
   // Required API Parameters
   #[mws_param(list_item_type_name = "Id")]

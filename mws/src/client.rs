@@ -82,6 +82,7 @@ impl FromXmlStream<Stream<::std::io::Cursor<String>>> for ErrorResponseInfo {
 }
 
 /// [Reference](http://docs.developer.amazonservices.com/en_CA/dev_guide/DG_Endpoints.html)
+#[derive(Debug, Clone)]
 pub struct ClientOptions {
   /// Your software can access Amazon Marketplace Web Service (Amazon MWS) using region-specific endpoints.
   pub endpoint: String,
@@ -97,6 +98,7 @@ pub struct ClientOptions {
   pub secret_key: String,
 }
 
+#[derive(Debug, Clone)]
 pub struct Client {
   options: ClientOptions,
   http_client: reqwest::Client,
