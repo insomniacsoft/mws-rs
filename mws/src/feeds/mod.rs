@@ -127,7 +127,7 @@ impl<M: Message> Envelope<M> {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, SerializeMwsParams)]
+#[derive(Debug, Clone, Default, SerializeMwsParams)]
 pub struct SubmitFeedParameters {
   pub FeedType: String,
   #[mws_param(list_item_type_name = "Id")]

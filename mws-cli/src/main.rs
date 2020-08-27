@@ -73,6 +73,12 @@ enum Command {
     #[structopt(long = "marketplace")]
     marketplace_id: String,
   },
+  DeleteSubscription {
+    #[structopt(long = "marketplace")]
+    marketplace_id: String,
+    #[structopt(long = "url")]
+    url: String,
+  },
   ProductGetMyPriceForASIN {
     #[structopt(long = "marketplace")]
     marketplace_id: String,
@@ -175,7 +181,24 @@ fn main() {
         marketplace_id,
       )
           .unwrap();
-
+      println!("{:#?}", res)
+    }
+    Command::DeleteSubscription { marketplace_id, url } => {
+      use mws::subscriptions::*;
+      let res = UpdateSubscription(&client, CreateSubscriptionParameters {
+        MarketplaceId: marketplace_id,
+        Subscription: Subscription {
+          NotificationType: NotificationType::ReportProcessingFinished,
+          Destination: Destination {
+            DeliveryChannel: DeliveryChannel::SQS,
+            AttributeList: vec![AttributeKeyValue {
+              Key: AttributeKey::sqsQueueUrl,
+              Value: url
+            }]
+          },
+          IsEnabled: false
+        }
+      }).unwrap();
       println!("{:#?}", res)
     }
     Command::ListRegisteredDestinations { marketplace_id } => {
