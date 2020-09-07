@@ -44,7 +44,14 @@ impl<W: encode::XmlEventWriter> encode::XmlWrite<W> for Envelope<InventoryMessag
             Inventory[][
               SKU[][sku]
               Quantity[][(&quantity)]
-              FulfillmentLatency[][(&fulfillment_latency)]
+              [{
+                if message.data.fulfillment_latency > 0 {
+                  write_xml!(w,
+                  FulfillmentLatency[][(&fulfillment_latency)]
+                  )?;
+                }
+                Ok(())
+              }]
             ]
           ]
         )?;

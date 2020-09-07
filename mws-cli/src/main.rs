@@ -97,6 +97,16 @@ enum Command {
     #[structopt(long = "content_type")]
     content_type: String,
   },
+  GetFeedSubmissionInfo {
+    #[structopt(long = "submission_id")]
+    submission_id: String
+  },
+  GetFeedSubmissionResult {
+    #[structopt(long = "id")]
+    id: String,
+    #[structopt(long = "out", parse(from_os_str))]
+    out: PathBuf,
+  },
 }
 
 fn main() {
@@ -283,6 +293,26 @@ fn main() {
         content_type
       ).unwrap();
       println!("{:#?}", res)
+    },
+    Command::GetFeedSubmissionInfo {
+      submission_id
+    } => {
+      use mws::feeds::*;
+      let res = GetFeedSubmissionList(&client,
+                                      GetFeedSubmissionListParameters{
+                                        FeedSubmissionIdList: Some(vec![submission_id]),
+                                        MaxCount: None,
+                                        FeedTypeList: None,
+                                        FeedProcessingStatusList: None,
+                                        SubmittedFromDate: None,
+                                        SubmittedToDate: None
+                                      }).unwrap();
+      println!("{:#?}", res);
+    }
+    Command::GetFeedSubmissionResult { id, out } => {
+      use mws::feeds::*;
+      let mut out = std::fs::File::create(out).unwrap();
+      GetFeedSubmissionResult(&client, id, &mut out).unwrap();
     }
   }
 }
