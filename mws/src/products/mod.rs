@@ -94,7 +94,7 @@ response_envelope_batch_type!(
 );
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, Serialize, SerializeMwsParams)]
+#[derive(Clone, Debug, Default, Serialize, SerializeMwsParams)]
 pub struct GetMatchingProductForIdParameters {
   pub MarketplaceId: String,
   pub IdType: String,
@@ -102,7 +102,7 @@ pub struct GetMatchingProductForIdParameters {
   pub IdList: Vec<String>,
 }
 
-#[derive(FromXmlStream, Default, Debug, PartialEq)]
+#[derive(FromXmlStream, Clone, Default, Debug, PartialEq)]
 #[allow(non_snake_case)]
 pub struct GetMatchingProductForIdResult {
   #[from_xml_stream(from_attr = "Id")]
