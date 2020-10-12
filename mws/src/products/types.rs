@@ -1,13 +1,14 @@
 //! https://docs.developer.amazonservices.com/en_US/products/Products_Datatypes.html
 
 use chrono::{DateTime, Utc};
+use crate::products::types::product::Product;
 
 pub mod product {
   use super::*;
 
   #[allow(non_snake_case)]
   #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
-  pub struct Identifier {
+  pub struct Identifiers {
     pub MarketplaceASIN: Option<MarketplaceASIN>,
     pub SKUIdentifier: Option<SKUIdentifier>,
   }
@@ -50,8 +51,10 @@ pub mod product {
   #[allow(non_snake_case)]
   #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
   pub struct Product {
-    pub Identifiers: product::Identifier,
+    pub Identifiers: Identifiers,
     pub Offers: Vec<Offer>,
+    pub AttributeSets: Vec<ItemAttributes>,
+    pub SalesRankings: Vec<SalesRank>,
   }
 }
 
@@ -180,6 +183,180 @@ pub struct Offer {
   pub IsFulfilledByAmazon: bool,
   pub IsBuyBoxWinner: bool,
   pub IsFeaturedMerchant: bool,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct DecimalWithUnits {
+  #[from_xml_stream(from_content)]
+  pub Value: String,
+  #[from_xml_stream(from_attr = "Units")]
+  pub Units: String,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct NonNegativeIntegerWithUnits {
+  #[from_xml_stream(from_content)]
+  pub Value: i32,
+  #[from_xml_stream(from_attr = "Units")]
+  pub Units: String,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct Creator {
+  #[from_xml_stream(from_content)]
+  pub Name: String,
+  #[from_xml_stream(from_attr = "Role")]
+  pub Role: String,
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct Dimension {
+  pub Height: Option<DecimalWithUnits>,
+  pub Length: Option<DecimalWithUnits>,
+  pub Width: Option<DecimalWithUnits>,
+  pub Weight: Option<DecimalWithUnits>
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct Image {
+  pub URL: String,
+  pub Height: DecimalWithUnits,
+  pub Width: DecimalWithUnits
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct Language {
+  pub Name: String,
+  pub Type: Option<String>,
+  pub AudioFormat: Option<String>
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct SalesRank {
+  pub ProductCategoryId: String,
+  pub Rank: i32
+}
+
+#[allow(non_snake_case)]
+#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+pub struct ItemAttributes {
+  #[from_xml_stream(from_attr = "lang")]
+  pub Language: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Actor: Vec<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Artist: Vec<String>,
+  pub AspectRatio: Option<String>,
+  pub AudienceRating: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Author: Vec<String>,
+  pub BackFinding: Option<String>,
+  pub BandMaterialType: Option<String>,
+  pub Binding: Option<String>,
+  pub BlurayRegion: Option<String>,
+  pub Brand: Option<String>,
+  pub CEROAgeRating: Option<String>,
+  pub ChainType: Option<String>,
+  pub ClaspType: Option<String>,
+  pub Color: Option<String>,
+  pub CPUManufacturer: Option<String>,
+  pub CPUSpeed: Option<DecimalWithUnits>,
+  pub CPUType: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Creator: Vec<Creator>,
+  pub Department: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Director: Vec<String>,
+  pub DisplaySize: Option<DecimalWithUnits>,
+  pub Edition: Option<String>,
+  pub EpisodeSequence: Option<String>,
+  pub ESRBAgeRating: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Feature: Vec<String>,
+  pub Flavor: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Format: Vec<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub GemType: Vec<String>,
+  pub Genre: Option<String>,
+  pub GolfClubFlex: Option<String>,
+  pub GolfClubLoft: Option<DecimalWithUnits>,
+  pub HandOrientation: Option<String>,
+  pub HardDiskInterface: Option<String>,
+  pub HardDiskSize: Option<DecimalWithUnits>,
+  pub HardwarePlatform: Option<String>,
+  pub HazardousMaterialType: Option<String>,
+  pub ItemDimensions: Option<Dimension>,
+  pub IsAdultProduct: Option<bool>,
+  pub IsAutographed: Option<bool>,
+  pub IsEligibleForTradeIn: Option<bool>,
+  pub IsMemorabilia: Option<bool>,
+  pub IssuesPerYear: Option<String>,
+  pub ItemPartNumber: Option<String>,
+  pub Label: Option<String>,
+  pub Languages: Vec<Language>,
+  pub LegalDisclaimer: Option<String>,
+  pub ListPrice: Option<MoneyType>,
+  pub Manufacturer: Option<String>,
+  pub ManufacturerMaximumAge: Option<DecimalWithUnits>,
+  pub ManufacturerMinimumAge: Option<DecimalWithUnits>,
+  pub ManufacturerPartsWarrantyDescription: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub MaterialType: Vec<String>,
+  pub MaximumResolution: Option<DecimalWithUnits>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub MediaType: Vec<String>,
+  pub MetalStamp: Option<String>,
+  pub MetalType: Option<String>,
+  pub Model: Option<String>,
+  pub NumberOfDiscs: Option<i32>,
+  pub NumberOfIssues: Option<i32>,
+  pub NumberOfItems: Option<i32>,
+  pub NumberOfPages: Option<i32>,
+  pub NumberOfTracks: Option<i32>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub OperatingSystem: Vec<String>,
+  pub OpticalZoom: Option<DecimalWithUnits>,
+  pub PackageDimensions: Option<Dimension>,
+  pub PackageQuantity: Option<i32>,
+  pub PartNumber: Option<String>,
+  pub PegiRating: Option<String>,
+  #[from_xml_stream(no_list_wrapper)]
+  pub Platform: Vec<String>,
+  pub ProcessorCount: Option<i32>,
+  pub ProductGroup: Option<String>,
+  pub ProductTypeName: Option<String>,
+  pub ProductTypeSubcategory: Option<String>,
+  pub PublicationDate: Option<String>,
+  pub Publisher: Option<String>,
+  pub RegionCode: Option<String>,
+  pub ReleaseDate: Option<String>,
+  pub RingSize: Option<String>,
+  pub RunningTime: Option<DecimalWithUnits>,
+  pub ShaftMaterial: Option<String>,
+  pub Scent: Option<String>,
+  pub SeasonSequence: Option<String>,
+  pub SeikodoProductCode: Option<String>,
+  pub Size: Option<String>,
+  pub SizePerPearl: Option<String>,
+  pub SmallImage: Option<Image>,
+  pub Studio: Option<String>,
+  pub SubscriptionLength: Option<NonNegativeIntegerWithUnits>,
+  pub SystemMemorySize: Option<DecimalWithUnits>,
+  pub SystemMemoryType: Option<String>,
+  pub TheatricalReleaseDate: Option<String>,
+  pub Title: Option<String>,
+  pub TotalDiamondWeight: Option<DecimalWithUnits>,
+  pub TotalGemWeight: Option<DecimalWithUnits>,
+  pub Warranty: Option<String>,
+  pub WEEETaxValue: Option<MoneyType>
 }
 
 #[cfg(test)]
@@ -386,4 +563,215 @@ mod tests {
       }
     );
   }
+}
+
+#[test]
+fn test_product() {
+  test_decode!(
+    Product,
+    r#"
+            <Product xmlns="http://mws.amazonservices.com/schema/Products/2011-10-01" xmlns:ns2="http://mws.amazonservices.com/schema/Products/2011-10-01/default.xsd">
+                <Identifiers>
+                  <MarketplaceASIN>
+                    <MarketplaceId>ATVPDKIKX0DER</MarketplaceId>
+                    <ASIN>1933988665</ASIN>
+                  </MarketplaceASIN>
+                </Identifiers>
+                <AttributeSets>
+                    <ItemAttributes xml:lang="en-US">
+                        <Author>Marmanis, Haralambos</Author>
+                        <Author>Babenko, Dmitry</Author>
+                        <Binding>Paperback</Binding>
+                        <Edition>1</Edition>
+                        <ItemDimensions>
+                            <Height Units="inches">9.17</Height>
+                            <Length Units="inches">7.36</Length>
+                            <Width Units="inches">0.75</Width>
+                            <Weight Units="pounds">1.40</Weight>
+                        </ItemDimensions>
+                        <IsEligibleForTradeIn>true</IsEligibleForTradeIn>
+                        <Label>Manning Publications</Label>
+                        <Languages>
+                            <Language>
+                                <Name>english</Name>
+                                <Type>Unknown</Type>
+                            </Language>
+                            <Language>
+                                <Name>english</Name>
+                                <Type>Original Language</Type>
+                            </Language>
+                            <Language>
+                                <Name>english</Name>
+                                <Type>Published</Type>
+                            </Language>
+                        </Languages>
+                        <ListPrice>
+                            <Amount>44.99</Amount>
+                            <CurrencyCode>USD</CurrencyCode>
+                        </ListPrice>
+                        <Manufacturer>Manning Publications</Manufacturer>
+                        <NumberOfItems>1</NumberOfItems>
+                        <NumberOfPages>368</NumberOfPages>
+                        <PackageDimensions>
+                            <Height Units="inches">0.80</Height>
+                            <Length Units="inches">9.10</Length>
+                            <Width Units="inches">7.30</Width>
+                            <Weight Units="pounds">1.35</Weight>
+                        </PackageDimensions>
+                        <ProductGroup>Book</ProductGroup>
+                        <ProductTypeName>ABIS_BOOK</ProductTypeName>
+                        <PublicationDate>2009-07-05</PublicationDate>
+                        <Publisher>Manning Publications</Publisher>
+                        <SmallImage>
+                            <URL>
+                                http://ecx.images-amazon.com/images/I/51EEz05N2HL._SL75_.jpg
+                            </URL>
+                            <Height Units="pixels">75</Height>
+                            <Width Units="pixels">60</Width>
+                        </SmallImage>
+                        <Studio>Manning Publications</Studio>
+                        <Title>Algorithms of the Intelligent Web</Title>
+                    </ItemAttributes>
+                </AttributeSets>
+                <Relationships/>
+                <SalesRankings>
+                    <SalesRank>
+                        <ProductCategoryId>book_display_on_website</ProductCategoryId>
+                        <Rank>59485</Rank>
+                    </SalesRank>
+                    <SalesRank>
+                        <ProductCategoryId>377886011</ProductCategoryId>
+                        <Rank>32</Rank>
+                    </SalesRank>
+                    <SalesRank>
+                        <ProductCategoryId>3887</ProductCategoryId>
+                        <Rank>66</Rank>
+                    </SalesRank>
+                    <SalesRank>
+                        <ProductCategoryId>3870</ProductCategoryId>
+                        <Rank>82</Rank>
+                    </SalesRank>
+                </SalesRankings>
+            </Product>
+    "#,
+    Product {
+      Identifiers: product::Identifiers {
+        MarketplaceASIN: Some(product::MarketplaceASIN{
+          MarketplaceId: "ATVPDKIKX0DER".to_string(),
+          ASIN: "1933988665".to_string()
+        }),
+        ..Default::default()
+      },
+      AttributeSets: vec![
+        ItemAttributes {
+          Language: Some("en-US".to_string()),
+          Author: vec![
+            "Marmanis, Haralambos".to_string(),
+            "Babenko, Dmitry".to_string()
+          ],
+          Binding: Some("Paperback".to_string()),
+          Edition: Some("1".to_string()),
+          ItemDimensions: Some(Dimension{
+            Height: Some(DecimalWithUnits{
+              Value: "9.17".to_string(),
+              Units: "inches".to_string(),
+            }),
+            Length: Some(DecimalWithUnits{
+              Value: "7.36".to_string(),
+              Units: "inches".to_string()
+            }),
+            Width: Some(DecimalWithUnits{
+              Value: "0.75".to_string(),
+              Units: "inches".to_string()
+            }),
+            Weight: Some(DecimalWithUnits{
+              Value: "1.40".to_string(),
+              Units: "pounds".to_string()
+            })
+          }),
+          IsEligibleForTradeIn: Some(true),
+          Label: Some("Manning Publications".to_string()),
+          Languages: vec![
+            Language{
+              Name: "english".to_string(),
+              Type: Some("Unknown".to_string()),
+              ..Default::default()
+            },
+            Language{
+              Name: "english".to_string(),
+              Type: Some("Original Language".to_string()),
+              ..Default::default()
+            },
+            Language{
+              Name: "english".to_string(),
+              Type: Some("Published".to_string()),
+              ..Default::default()
+            }
+          ],
+          ListPrice: Some(MoneyType{
+            Amount: "44.99".to_string(),
+            CurrencyCode: "USD".to_string()
+          }),
+          Manufacturer: Some("Manning Publications".to_string()),
+          NumberOfItems: Some(1),
+          NumberOfPages: Some(368),
+          PackageDimensions: Some(Dimension{
+            Height: Some(DecimalWithUnits{
+              Value: "0.80".to_string(),
+              Units: "inches".to_string()
+            }),
+            Length: Some(DecimalWithUnits{
+              Value: "9.10".to_string(),
+              Units: "inches".to_string()
+            }),
+            Width: Some(DecimalWithUnits{
+              Value: "7.30".to_string(),
+              Units: "inches".to_string()
+            }),
+            Weight: Some(DecimalWithUnits{
+              Value: "1.35".to_string(),
+              Units: "pounds".to_string()
+            })
+          }),
+          ProductGroup: Some("Book".to_string()),
+          ProductTypeName: Some("ABIS_BOOK".to_string()),
+          PublicationDate: Some("2009-07-05".to_string()),
+          Publisher: Some("Manning Publications".to_string()),
+          SmallImage: Some(Image{
+            URL: "http://ecx.images-amazon.com/images/I/51EEz05N2HL._SL75_.jpg".to_string(),
+            Height: DecimalWithUnits {
+              Value: "75".to_string(),
+              Units: "pixels".to_string()
+            },
+            Width: DecimalWithUnits {
+              Value: "60".to_string(),
+              Units: "pixels".to_string()
+            }
+          }),
+          Studio: Some("Manning Publications".to_string()),
+          Title: Some("Algorithms of the Intelligent Web".to_string()),
+          ..Default::default()
+        }
+      ],
+      SalesRankings: vec![
+        SalesRank {
+          ProductCategoryId: "book_display_on_website".to_string(),
+          Rank: 59485
+        },
+        SalesRank {
+          ProductCategoryId: "377886011".to_string(),
+          Rank: 32
+        },
+        SalesRank {
+          ProductCategoryId: "3887".to_string(),
+          Rank: 66
+        },
+        SalesRank {
+          ProductCategoryId: "3870".to_string(),
+          Rank: 82
+        }
+      ],
+      ..Default::default()
+    }
+  );
 }

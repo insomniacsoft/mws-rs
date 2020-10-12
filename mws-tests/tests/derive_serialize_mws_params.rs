@@ -2,7 +2,7 @@
 extern crate mws_derive;
 extern crate mws;
 
-use mws::{SerializeMwsParams, SerializeMwsParamsContext};
+use mws::SerializeMwsParams;
 
 #[test]
 fn derive_struct() {
