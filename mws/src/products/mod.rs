@@ -114,6 +114,17 @@ pub struct GetMatchingProductForIdResult {
   pub Products: Vec<Product>
 }
 
+#[allow(non_snake_case)]
+pub fn GetMatchingProductForId(
+  client: &Client,
+  params: GetMatchingProductForIdParameters,
+) -> MwsResult<Vec<GetMatchingProductForIdResult>> {
+  client
+      .request_xml_with_form(Method::Post, PATH, VERSION, "GetMatchingProductForId", params)
+      .map(|e: GetMatchingProductForIdResponseEnvelope| e.into_inner())
+      .map_err(|err| err.into())
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
