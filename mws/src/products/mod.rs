@@ -118,7 +118,7 @@ pub struct GetMatchingProductForIdResult {
 pub fn GetMatchingProductForId(
   client: &Client,
   params: GetMatchingProductForIdParameters,
-) -> MwsResult<Vec<GetMatchingProductForIdResult>> {
+) -> MwsResult<GetMatchingProductForIdResult> {
   client
       .request_xml_with_form(Method::Post, PATH, VERSION, "GetMatchingProductForId", params)
       .map(|e: GetMatchingProductForIdResponseEnvelope| e.into_inner())
