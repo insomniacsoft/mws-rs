@@ -41,7 +41,7 @@ pub fn GetEligibleShippingServices(
 ) -> MwsResult<GetEligibleShippingServicesResponse> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "GetEligibleShippingServices",
@@ -82,7 +82,7 @@ pub fn CreateShipment(
   params: CreateShipmentParameters,
 ) -> MwsResult<CreateShipmentResponse> {
   client
-    .request_xml(Method::Post, PATH, VERSION, "CreateShipment", params)
+    .request_xml(Method::POST, PATH, VERSION, "CreateShipment", params)
     .map(|e: CreateShipmentEnvelope| e.into_inner())
     .map_err(|err| err.into())
 }
@@ -103,7 +103,7 @@ response_envelope_type!(
 pub fn GetShipment(client: &Client, id: &str) -> MwsResult<GetShipmentResponse> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "GetShipment",
@@ -128,7 +128,7 @@ response_envelope_type!(
 pub fn CancelShipment(client: &Client, id: &str) -> MwsResult<CancelShipmentResponse> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "CancelShipment",

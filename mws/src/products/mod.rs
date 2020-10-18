@@ -41,7 +41,7 @@ pub fn GetLowestPricedOffersForSKU(
 ) -> MwsResult<GetLowestPricedOffersForSKUResponse> {
   client
     .request_xml_with_form(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "GetLowestPricedOffersForSKU",
@@ -82,7 +82,7 @@ pub fn GetMyPriceForASIN(
   params: GetMyPriceForASINParameters,
 ) -> MwsResult<Vec<GetMyPriceForASINResult>> {
   client
-    .request_xml_with_form(Method::Post, PATH, VERSION, "GetMyPriceForASIN", params)
+    .request_xml_with_form(Method::POST, PATH, VERSION, "GetMyPriceForASIN", params)
     .map(|e: GetMyPriceForASINResponseEnvelope| e.into_inner())
     .map_err(|err| err.into())
 }
@@ -121,7 +121,7 @@ pub fn GetMyPriceForSKU(
   params: GetMyPriceForSKUParameters,
 ) -> MwsResult<Vec<GetMyPriceForSKUResult>> {
   client
-      .request_xml_with_form(Method::Post, PATH, VERSION, "GetMyPriceForSKU", params)
+      .request_xml_with_form(Method::POST, PATH, VERSION, "GetMyPriceForSKU", params)
       .map(|e: GetMyPriceForSKUResponseEnvelope| e.into_inner())
       .map_err(|err| err.into())
 }
@@ -159,7 +159,7 @@ pub fn GetMatchingProductForId(
   params: GetMatchingProductForIdParameters,
 ) -> MwsResult<Vec<GetMatchingProductForIdResult>> {
   client
-      .request_xml_with_form(Method::Post, PATH, VERSION, "GetMatchingProductForId", params)
+      .request_xml_with_form(Method::POST, PATH, VERSION, "GetMatchingProductForId", params)
       .map(|e: GetMatchingProductForIdResponseEnvelope| e.into_inner())
       .map_err(|err| err.into())
 }

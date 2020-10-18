@@ -41,7 +41,7 @@ pub fn ListAllFulfillmentOrders(
 ) -> MwsResult<ListAllFulfillmentOrdersResponse> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "ListAllFulfillmentOrders",
@@ -64,7 +64,7 @@ pub fn ListAllFulfillmentOrdersByNextToken(
   let params = vec![("NextToken".to_string(), next_token)];
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "ListAllFulfillmentOrdersByNextToken",
@@ -102,7 +102,7 @@ pub fn GetFulfillmentOrder(
     seller_fulfillment_order_id,
   )];
   client
-    .request_xml(Method::Post, PATH, VERSION, "GetFulfillmentOrder", params)
+    .request_xml(Method::POST, PATH, VERSION, "GetFulfillmentOrder", params)
     .map(|e: GetFulfillmentOrderEnvelope| e.into_inner())
     .map_err(|err| err.into())
 }
@@ -126,7 +126,7 @@ pub fn GetPackageTrackingDetails(
   let params = vec![("PackageNumber".to_string(), package_number.to_owned())];
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "GetPackageTrackingDetails",
@@ -182,7 +182,7 @@ pub fn GetFulfillmentPreview(
   params: GetFulfillmentPreviewParameters,
 ) -> MwsResult<GetFulfillmentPreviewResponse> {
   client
-    .request_xml(Method::Post, PATH, VERSION, "GetFulfillmentPreview", params)
+    .request_xml(Method::POST, PATH, VERSION, "GetFulfillmentPreview", params)
     .map(|e: GetFulfillmentPreviewEnvelope| e.into_inner())
     .map_err(|err| err.into())
 }
@@ -252,7 +252,7 @@ pub fn CreateFulfillmentOrder(
 ) -> MwsResult<()> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "CreateFulfillmentOrder",
@@ -274,7 +274,7 @@ response_envelope_type!(
 pub fn CancelFulfillmentOrder(client: &Client, seller_fulfillment_order_id: &str) -> MwsResult<()> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "CancelFulfillmentOrder",

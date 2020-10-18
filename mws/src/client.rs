@@ -1,12 +1,12 @@
-use reqwest;
-pub use reqwest::header::ContentType;
-use reqwest::Response;
+use reqwest::blocking::*;
+use reqwest::blocking::Response;
 pub use reqwest::{Method, StatusCode};
 use crate::result::{MwsError, MwsResult};
 use crate::sign::SignatureV2;
 use std::io::Read;
 use crate::xmlhelper::decode::{FromXmlStream, Stream};
 use crate::SerializeMwsParams;
+use reqwest::header::HeaderValue;
 
 #[derive(Debug)]
 pub struct ErrorResponse {
@@ -69,8 +69,8 @@ impl ErrorResponseInfo {
   }
 }
 
-impl FromXmlStream<Stream<reqwest::Response>> for ErrorResponseInfo {
-  fn from_xml(s: &mut Stream<reqwest::Response>) -> MwsResult<ErrorResponseInfo> {
+impl FromXmlStream<Stream<reqwest::blocking::Response>> for ErrorResponseInfo {
+  fn from_xml(s: &mut Stream<reqwest::blocking::Response>) -> MwsResult<ErrorResponseInfo> {
     ErrorResponseInfo::from_xml_stream(s)
   }
 }
@@ -101,18 +101,18 @@ pub struct ClientOptions {
 #[derive(Debug, Clone)]
 pub struct Client {
   options: ClientOptions,
-  http_client: reqwest::Client,
+  http_client: reqwest::blocking::Client,
 }
 
 impl Client {
   pub fn new(options: ClientOptions) -> MwsResult<Client> {
     Ok(Client {
       options: options,
-      http_client: reqwest::Client::new(),
+      http_client: reqwest::blocking::Client::new(),
     })
   }
 
-  pub fn with_http_client(options: ClientOptions, http_client: reqwest::Client) -> Client {
+  pub fn with_http_client(options: ClientOptions, http_client: reqwest::blocking::Client) -> Client {
     Client {
       options: options,
       http_client: http_client,
@@ -126,7 +126,7 @@ impl Client {
     version: &str,
     action: &str,
     parameters: P,
-  ) -> MwsResult<reqwest::Response>
+  ) -> MwsResult<reqwest::blocking::Response>
   where
     P: SerializeMwsParams,
   {
@@ -162,8 +162,8 @@ impl Client {
     parameters: P,
     body: R,
     content_md5: String,
-    content_type: ContentType,
-  ) -> MwsResult<reqwest::Response>
+    content_type: String,
+  ) -> MwsResult<reqwest::blocking::Response>
   where
     P: SerializeMwsParams,
     R: Read + Send + 'static,
@@ -188,8 +188,8 @@ impl Client {
     self
       .http_client
       .request(method, &url)
-      .header(content_type)
-      .body(reqwest::Body::new(body))
+      .header(reqwest::header::CONTENT_TYPE, HeaderValue::from_str(&content_type).unwrap())
+      .body(reqwest::blocking::Body::new(body))
       .send()
       .map_err(MwsError::from)
       .and_then(handle_error_status)
@@ -202,7 +202,7 @@ impl Client {
     version: &str,
     action: &str,
     parameters: P,
-  ) -> MwsResult<reqwest::Response>
+  ) -> MwsResult<reqwest::blocking::Response>
   where
     P: SerializeMwsParams,
   {
@@ -247,7 +247,7 @@ impl Client {
   ) -> MwsResult<T>
   where
     P: SerializeMwsParams,
-    T: FromXmlStream<Stream<reqwest::Response>>,
+    T: FromXmlStream<Stream<reqwest::blocking::Response>>,
   {
     let resp = self.request(method, path, version, action, parameters)?;
     let mut stream = Stream::new(resp);
@@ -265,7 +265,7 @@ impl Client {
   ) -> MwsResult<T>
   where
     P: SerializeMwsParams,
-    T: FromXmlStream<Stream<reqwest::Response>>,
+    T: FromXmlStream<Stream<reqwest::blocking::Response>>,
   {
     let resp = self.request_with_form(method, path, version, action, parameters)?;
     let mut stream = Stream::new(resp);
@@ -282,11 +282,11 @@ impl Client {
     parameters: P,
     body: R,
     content_md5: String,
-    content_type: ContentType,
+    content_type: String,
   ) -> MwsResult<T>
   where
     P: SerializeMwsParams,
-    T: FromXmlStream<Stream<reqwest::Response>>,
+    T: FromXmlStream<Stream<reqwest::blocking::Response>>,
     R: Read + Send + 'static,
   {
     let resp = self.request_with_body(
@@ -338,7 +338,7 @@ impl Client {
     let headers = resp
       .headers()
       .iter()
-      .map(|view| (view.name().to_string(), view.value_string()))
+      .map(|view| (view.0.to_string(), view.1.to_str().unwrap().to_string()))
       .collect();
 
     let mut body = vec![];
@@ -397,7 +397,7 @@ mod tests {
     let client = get_test_client();
     let (status, _, body) = client
       .request_raw(
-        Method::Post,
+        Method::POST,
         "/Orders/2013-09-01",
         "2013-09-01",
         "GetServiceStatus",
@@ -411,7 +411,7 @@ mod tests {
     use std::io::Cursor;
     let (status, _, body) = client
       .request_raw(
-        Method::Post,
+        Method::POST,
         "/Fake/2013-09-01",
         "2013-09-01",
         "GetServiceStatus",

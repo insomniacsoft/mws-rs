@@ -78,7 +78,7 @@ pub fn ListInventorySupply(
 ) -> MwsResult<ListInventorySupplyResponse> {
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "ListInventorySupply",
@@ -96,7 +96,7 @@ pub fn ListInventorySupplyByNextToken(
   let params = vec![("NextToken".to_string(), next_token)];
   client
     .request_xml(
-      Method::Post,
+      Method::POST,
       PATH,
       VERSION,
       "ListInventorySupplyByNextToken",
