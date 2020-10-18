@@ -7,21 +7,26 @@ pub mod product {
   use super::*;
 
   #[allow(non_snake_case)]
-  #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+  #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+  #[serde()]
   pub struct Identifiers {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub MarketplaceASIN: Option<MarketplaceASIN>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub SKUIdentifier: Option<SKUIdentifier>,
   }
 
   #[allow(non_snake_case)]
-  #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+  #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+  #[serde()]
   pub struct MarketplaceASIN {
     pub MarketplaceId: String,
     pub ASIN: String,
   }
 
   #[allow(non_snake_case)]
-  #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+  #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+  #[serde()]
   pub struct SKUIdentifier {
     pub MarketplaceId: String,
     pub SellerId: String,
@@ -29,7 +34,8 @@ pub mod product {
   }
 
   #[allow(non_snake_case)]
-  #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+  #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+  #[serde()]
   pub struct Price {
     pub LandedPrice: MoneyType,
     pub ListingPrice: MoneyType,
@@ -37,7 +43,8 @@ pub mod product {
   }
 
   #[allow(non_snake_case)]
-  #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+  #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+  #[serde()]
   pub struct Offer {
     pub BuyingPrice: Price,
     pub RegularPrice: MoneyType,
@@ -49,11 +56,15 @@ pub mod product {
   }
 
   #[allow(non_snake_case)]
-  #[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+  #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+  #[serde()]
   pub struct Product {
     pub Identifiers: Identifiers,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub Offers: Vec<Offer>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub AttributeSets: Vec<ItemAttributes>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub SalesRankings: Vec<SalesRank>,
   }
 }
@@ -77,16 +88,19 @@ str_enum! {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Identifier {
   pub MarketplaceId: String,
   pub SellerSKU: String,
   pub ItemCondition: ItemCondition,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub TimeOfOfferChange: Option<DateTime<Utc>>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct OfferCount {
   #[from_xml_stream(from_attr = "condition")]
   pub Condition: String,
@@ -97,21 +111,24 @@ pub struct OfferCount {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct MoneyType {
   pub Amount: String,
   pub CurrencyCode: String,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Points {
   pub PointsNumber: i32,
   pub PointsMonetaryValue: MoneyType,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct LowestPrice {
   #[from_xml_stream(from_attr = "condition")]
   pub Condition: String,
@@ -120,11 +137,13 @@ pub struct LowestPrice {
   pub LandedPrice: MoneyType,
   pub ListingPrice: MoneyType,
   pub Shipping: MoneyType,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Points: Option<Points>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct BuyBoxPrice {
   #[from_xml_stream(from_attr = "condition")]
   pub Condition: String,
@@ -134,44 +153,58 @@ pub struct BuyBoxPrice {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Summary {
   pub TotalOfferCount: i32,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub NumberOfOffers: Vec<OfferCount>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub LowestPrices: Vec<LowestPrice>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub BuyBoxPrices: Vec<BuyBoxPrice>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub BuyBoxEligibleOffers: Vec<OfferCount>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct SellerFeedbackRating {
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SellerPositiveFeedbackRating: Option<String>,
   pub FeedbackCount: i32,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct ShippingTime {
   #[from_xml_stream(from_attr = "minimumHours")]
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub MinimumHours: Option<i32>,
   #[from_xml_stream(from_attr = "maximumHours")]
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub MaximumHours: Option<i32>,
   #[from_xml_stream(from_attr = "availabilityDate")]
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub AvailableDate: Option<DateTime<Utc>>,
   #[from_xml_stream(from_attr = "availabilityType")]
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub AvailabilityType: Option<AvailabilityType>,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct ShipsFrom {
   pub State: String,
   pub Country: String,
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Offer {
   pub MyOffer: bool,
   pub SubCondition: String,
@@ -179,6 +212,7 @@ pub struct Offer {
   pub ShippingTime: ShippingTime,
   pub ListingPrice: MoneyType,
   pub Shipping: MoneyType,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ShipsFrom: Option<ShipsFrom>,
   pub IsFulfilledByAmazon: bool,
   pub IsBuyBoxWinner: bool,
@@ -186,7 +220,8 @@ pub struct Offer {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct DecimalWithUnits {
   #[from_xml_stream(from_content)]
   pub Value: String,
@@ -195,7 +230,8 @@ pub struct DecimalWithUnits {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct NonNegativeIntegerWithUnits {
   #[from_xml_stream(from_content)]
   pub Value: i32,
@@ -204,7 +240,8 @@ pub struct NonNegativeIntegerWithUnits {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Creator {
   #[from_xml_stream(from_content)]
   pub Name: String,
@@ -213,16 +250,22 @@ pub struct Creator {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Dimension {
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Height: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Length: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Width: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Weight: Option<DecimalWithUnits>
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Image {
   pub URL: String,
   pub Height: DecimalWithUnits,
@@ -230,132 +273,233 @@ pub struct Image {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct Language {
   pub Name: String,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Type: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub AudioFormat: Option<String>
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct SalesRank {
   pub ProductCategoryId: String,
   pub Rank: i32
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, PartialEq, Serialize, FromXmlStream)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, FromXmlStream)]
+#[serde()]
 pub struct ItemAttributes {
   #[from_xml_stream(from_attr = "lang")]
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Language: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Actor: Vec<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Artist: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub AspectRatio: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub AudienceRating: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Author: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub BackFinding: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub BandMaterialType: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Binding: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub BlurayRegion: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Brand: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub CEROAgeRating: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ChainType: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ClaspType: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Color: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub CPUManufacturer: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub CPUSpeed: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub CPUType: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Creator: Vec<Creator>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Department: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Director: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub DisplaySize: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Edition: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub EpisodeSequence: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ESRBAgeRating: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Feature: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Flavor: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Format: Vec<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub GemType: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Genre: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub GolfClubFlex: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub GolfClubLoft: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub HandOrientation: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub HardDiskInterface: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub HardDiskSize: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub HardwarePlatform: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub HazardousMaterialType: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ItemDimensions: Option<Dimension>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub IsAdultProduct: Option<bool>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub IsAutographed: Option<bool>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub IsEligibleForTradeIn: Option<bool>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub IsMemorabilia: Option<bool>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub IssuesPerYear: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ItemPartNumber: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Label: Option<String>,
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Languages: Vec<Language>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub LegalDisclaimer: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ListPrice: Option<MoneyType>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Manufacturer: Option<String>,
   pub ManufacturerMaximumAge: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ManufacturerMinimumAge: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ManufacturerPartsWarrantyDescription: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub MaterialType: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub MaximumResolution: Option<DecimalWithUnits>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub MediaType: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub MetalStamp: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub MetalType: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Model: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub NumberOfDiscs: Option<i32>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub NumberOfIssues: Option<i32>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub NumberOfItems: Option<i32>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub NumberOfPages: Option<i32>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub NumberOfTracks: Option<i32>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub OperatingSystem: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub OpticalZoom: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub PackageDimensions: Option<Dimension>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub PackageQuantity: Option<i32>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub PartNumber: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub PegiRating: Option<String>,
   #[from_xml_stream(no_list_wrapper)]
+  #[serde(default, skip_serializing_if = "Vec::is_empty")]
   pub Platform: Vec<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ProcessorCount: Option<i32>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ProductGroup: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ProductTypeName: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ProductTypeSubcategory: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub PublicationDate: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Publisher: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub RegionCode: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ReleaseDate: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub RingSize: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub RunningTime: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub ShaftMaterial: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Scent: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SeasonSequence: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SeikodoProductCode: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Size: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SizePerPearl: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SmallImage: Option<Image>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Studio: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SubscriptionLength: Option<NonNegativeIntegerWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SystemMemorySize: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub SystemMemoryType: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub TheatricalReleaseDate: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Title: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub TotalDiamondWeight: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub TotalGemWeight: Option<DecimalWithUnits>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub Warranty: Option<String>,
+  #[serde(default, skip_serializing_if = "Option::is_none")]
   pub WEEETaxValue: Option<MoneyType>
 }
 

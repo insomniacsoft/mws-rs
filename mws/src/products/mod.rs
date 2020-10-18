@@ -87,6 +87,45 @@ pub fn GetMyPriceForASIN(
     .map_err(|err| err.into())
 }
 
+
+
+
+response_envelope_batch_type!(
+  GetMyPriceForSKUResponseEnvelope<GetMyPriceForSKUResult>,
+  "GetMyPriceForSKUResponse",
+  "GetMyPriceForSKUResult"
+);
+
+#[allow(non_snake_case)]
+#[derive(Clone, Debug, Default, Serialize, SerializeMwsParams)]
+pub struct GetMyPriceForSKUParameters {
+  pub MarketplaceId: String,
+  #[mws_param(list_item_type_name = "SellerSKU")]
+  pub SellerSKUList: Vec<String>,
+  pub ItemCondition: Option<ItemCondition>,
+}
+
+#[derive(FromXmlStream, Default, Debug, PartialEq)]
+#[allow(non_snake_case)]
+pub struct GetMyPriceForSKUResult {
+  #[from_xml_stream(from_attr = "SellerSKU")]
+  pub SellerSKU: String,
+  #[from_xml_stream(from_attr = "status")]
+  pub Status: String,
+  pub Product: product::Product,
+}
+
+#[allow(non_snake_case)]
+pub fn GetMyPriceForSKU(
+  client: &Client,
+  params: GetMyPriceForSKUParameters,
+) -> MwsResult<Vec<GetMyPriceForSKUResult>> {
+  client
+      .request_xml_with_form(Method::Post, PATH, VERSION, "GetMyPriceForSKU", params)
+      .map(|e: GetMyPriceForSKUResponseEnvelope| e.into_inner())
+      .map_err(|err| err.into())
+}
+
 response_envelope_batch_type!(
   GetMatchingProductForIdResponseEnvelope<GetMatchingProductForIdResult>,
   "GetMatchingProductForIdResponse",
@@ -118,7 +157,7 @@ pub struct GetMatchingProductForIdResult {
 pub fn GetMatchingProductForId(
   client: &Client,
   params: GetMatchingProductForIdParameters,
-) -> MwsResult<GetMatchingProductForIdResult> {
+) -> MwsResult<Vec<GetMatchingProductForIdResult>> {
   client
       .request_xml_with_form(Method::Post, PATH, VERSION, "GetMatchingProductForId", params)
       .map(|e: GetMatchingProductForIdResponseEnvelope| e.into_inner())
